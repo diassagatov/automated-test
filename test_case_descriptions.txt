@@ -1,0 +1,120 @@
+SOFTWARE TEST AUTOMATION - TEST CASE DESCRIPTIONS
+==================================================
+
+Project: Demo Blaze Website Test Automation
+Framework: Robot Framework with Selenium Library
+Browser: Chrome with ChromeDriver
+
+TEST CASE 1: USER SIGN UP
+-------------------------
+Objective: Verify that a new user can successfully register on the Demo Blaze website
+
+Steps to Automate:
+1. Open Demo Blaze website (https://www.demoblaze.com)
+2. Click on "Sign up" link
+3. Fill in the sign up form with:
+   - Username: newuser456
+   - Password: newpass456
+4. Click "Sign up" button
+5. Handle the alert confirmation
+6. Verify that the sign up was successful
+
+Expected Result: User should be able to register successfully and see confirmation
+
+TEST CASE 2: USER LOG IN
+------------------------
+Objective: Verify that an existing user can successfully log in to the Demo Blaze website
+
+Steps to Automate:
+1. Open Demo Blaze website (https://www.demoblaze.com)
+2. Click on "Log in" link
+3. Fill in the log in form with:
+   - Username: testuser123
+   - Password: testpass123
+4. Click "Log in" button
+5. Verify that user is logged in by checking for "Welcome" message
+
+Expected Result: User should be logged in successfully and see welcome message
+
+TEST CASE 3: USER LOG OUT
+-------------------------
+Objective: Verify that a logged-in user can successfully log out from the Demo Blaze website
+
+Steps to Automate:
+1. Open Demo Blaze website (https://www.demoblaze.com)
+2. Log in with valid credentials (testuser123/testpass123)
+3. Verify user is logged in
+4. Click on "Log out" link
+5. Verify that user is logged out (Welcome message should disappear)
+
+Expected Result: User should be logged out successfully
+
+TEST CASE 4: BUY PRODUCT
+------------------------
+Objective: Verify that a logged-in user can successfully purchase a product
+
+Steps to Automate:
+1. Open Demo Blaze website (https://www.demoblaze.com)
+2. Log in with valid credentials (testuser123/testpass123)
+3. Navigate to a product (Samsung galaxy s6)
+4. Click on the product to view details
+5. Click "Add to cart" button
+6. Handle the alert confirmation
+7. Navigate to cart
+8. Verify product is in cart
+9. Click "Place Order" button
+10. Fill order form with:
+    - Name: Test User
+    - Country: Test Country
+    - City: Test City
+    - Credit card: 1234567890123456
+    - Month: 12
+    - Year: 2025
+11. Click "Purchase" button
+12. Verify order success message
+13. Click "OK" to close confirmation
+
+Expected Result: User should be able to complete the purchase successfully
+
+ADDITIONAL TEST CASES (OPTIONAL)
+---------------------------------
+- Test case for invalid login credentials
+- Test case for empty form submissions
+- Test case for product search functionality
+- Test case for cart management (add/remove products)
+- Test case for order form validation
+
+PROJECT STRUCTURE
+-----------------
+testing-ass2/
+├── chromedriver/
+│   ├── chromedriver.exe
+│   ├── LICENSE.chromedriver
+│   └── THIRD_PARTY_NOTICES.chromedriver
+├── tests/
+│   ├── test_signup.robot
+│   ├── test_login.robot
+│   ├── test_logout.robot
+│   └── test_purchase.robot
+├── resources/
+│   ├── variables.robot
+│   └── keywords.robot
+├── results/
+├── logs/
+├── venv/
+├── requirements.txt
+└── test_case_descriptions.txt
+
+EXECUTION INSTRUCTIONS
+-----------------------
+1. Activate virtual environment: venv\Scripts\activate
+2. Run all tests: robot tests/
+3. Run specific test: robot tests/test_login.robot
+4. Run with output directory: robot -d results tests/
+5. Run with log level: robot -L DEBUG tests/
+
+REPORTING
+---------
+- HTML reports will be generated in the results/ directory
+- Log files will be available in the logs/ directory
+- Screenshots will be captured on test failures
