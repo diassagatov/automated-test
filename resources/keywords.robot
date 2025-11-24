@@ -28,11 +28,11 @@ Open Browserstack Session
     ${access_key}=    Get Env Or Default    BROWSERSTACK_ACCESS_KEY    ${BROWSERSTACK_ACCESS_KEY}
     ${remote_url}=    Set Variable    https://${username}:${access_key}@hub-cloud.browserstack.com/wd/hub
     
-    # НОВЫЙ КОД: Получение имени сборки из Jenkins. Используем BUILD_TAG или BROWSERSTACK_BUILD по умолчанию.
+    # Получение имени сборки из Jenkins (использует BUILD_TAG, если доступен)
     ${jenkins_build_name}= Get Env Or Default   BUILD_TAG   ${BROWSERSTACK_BUILD}
 
     ${bstack_options}=    Create Dictionary    os=${BROWSERSTACK_OS}    osVersion=${BROWSERSTACK_OS_VERSION}    projectName=${BROWSERSTACK_PROJECT}
-    # ИСПОЛЬЗУЕМ ПЕРЕМЕННУЮ JENKINS ДЛЯ ИМЕНИ СБОРКИ
+    # Передача имени сборки в BrowserStack
     ...    buildName=${jenkins_build_name}    sessionName=${BROWSERSTACK_SESSION}
     ${desired_caps}=    Create Dictionary    browserName=${BROWSERSTACK_BROWSER}    browserVersion=${BROWSERSTACK_BROWSER_VERSION}    bstack:options=${bstack_options}
     Open Browser    ${BASE_URL}    ${BROWSERSTACK_BROWSER}    remote_url=${remote_url}    desired_capabilities=${desired_caps}
