@@ -7,11 +7,8 @@ This project contains automated test cases for the Demo Blaze website using Robo
 ```
 testing-ass2/
 ├── tests/                       # Test case files
-│   ├── test_signup.robot       # User sign up test
-│   ├── test_login.robot        # User login test
-│   ├── test_logout.robot       # User logout test
-│   ├── test_purchase.robot     # Product purchase test
-│   └── test_suite.robot        # Complete test suite
+│   ├── test_basic_functionality.robot   # Smoke checks
+│   └── test_final_suite.robot           # Modal regression test
 ├── resources/                   # Resource files
 │   ├── variables.robot         # Test variables and constants
 │   └── keywords.robot          # Custom keywords
@@ -52,7 +49,7 @@ robot tests/
 
 ### Run Specific Test
 ```bash
-robot tests/test_login.robot
+robot tests/test_basic_functionality.robot
 ```
 
 ### Run with Output Directory
@@ -65,32 +62,46 @@ robot -d results tests/
 robot -L DEBUG tests/
 ```
 
-### Run Complete Test Suite
+### Run Smoke Suite Only
 ```bash
-robot tests/test_suite.robot
+robot tests/test_basic_functionality.robot
 ```
+
+### Run Remotely on BrowserStack
+1. Экспортируйте учётные данные (или задайте их в Jenkins credentials):
+   ```bash
+   export BROWSERSTACK_USERNAME=diassagatov_LcB1nj
+   export BROWSERSTACK_ACCESS_KEY=nuPZvU9EM9xuax4YpHyb
+   ```
+   > На Windows используйте `set` или PowerShell `Set-Item Env:...`.
+
+2. Включите удалённый запуск:
+   ```bash
+   robot --variable USE_BROWSERSTACK:True -d results tests/
+   ```
+   По умолчанию будет выбран Windows 11 + Chrome latest; параметры можно переопределить переменными `BROWSERSTACK_OS`, `BROWSERSTACK_BROWSER_VERSION` и т.д. из `resources/variables.robot`.
 
 ## Test Cases
 
-### 1. User Sign Up Test
-- **File**: `tests/test_signup.robot`
-- **Purpose**: Verify new user registration
-- **Tags**: signup, registration
+### 1. Website Loads Successfully
+- **File**: `tests/test_basic_functionality.robot`
+- **Purpose**: Smoke-check that the site opens and key header elements are visible.
+- **Tags**: basic, smoke
 
-### 2. User Login Test
-- **File**: `tests/test_login.robot`
-- **Purpose**: Verify user authentication
-- **Tags**: login, authentication
+### 2. Navigation Elements Present
+- **File**: `tests/test_basic_functionality.robot`
+- **Purpose**: Validate primary navigation links exist on the landing page.
+- **Tags**: basic, navigation
 
-### 3. User Logout Test
-- **File**: `tests/test_logout.robot`
-- **Purpose**: Verify user logout functionality
-- **Tags**: logout, authentication
+### 3. Product Categories Visible
+- **File**: `tests/test_basic_functionality.robot`
+- **Purpose**: Ensure Phones/Laptops/Monitors categories are rendered.
+- **Tags**: basic, products
 
-### 4. Product Purchase Test
-- **File**: `tests/test_purchase.robot`
-- **Purpose**: Verify complete purchase flow
-- **Tags**: purchase, ecommerce, cart
+### 4. Demo Blaze Modal Functionality Test
+- **File**: `tests/test_final_suite.robot`
+- **Purpose**: Exercise the login/sign-up modals (open/close) to ensure UI elements render.
+- **Tags**: modal, ui
 
 ## Test Data
 
@@ -117,7 +128,7 @@ Key configuration settings in `resources/variables.robot`:
 
 ## Troubleshooting
 
-1. **Browser/Driver Issues**: Ensure Chrome is installed and up to date so Selenium Manager can fetch a compatible driver.
+1. **Browser/Driver Issues**: Ensure Chrome is installed and up to date so Selenium Manager can fetch a compatible driver, or verify BrowserStack credentials when running remotely.
 2. **Element Not Found**: Check if the website structure has changed.
 3. **Timeout Issues**: Increase wait times in `resources/variables.robot`.
 

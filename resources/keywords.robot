@@ -1,14 +1,46 @@
 *** Settings ***
 Library    SeleniumLibrary
+Library    OperatingSystem
+Library    Collections
 Resource   variables.robot
 
 *** Keywords ***
 Open Demo Blaze Website
-    [Documentation]    Opens the Demo Blaze website
-    Open Browser    ${BASE_URL}    ${BROWSER}    service_log_path=logs/chromedriver.log
+    [Documentation]    Opens the Demo Blaze website locally or on BrowserStack
+    ${use_browserstack}=    Should Use Browserstack
+    Run Keyword If    ${use_browserstack}    Open Browserstack Session
+    ...    ELSE    Open Local Browser Session
     Maximize Browser Window
     Set Selenium Implicit Wait    ${IMPLICIT_WAIT}
     Set Selenium Timeout    ${PAGE_LOAD_TIMEOUT}
+
+Open Local Browser Session
+    [Documentation]    Opens a local browser session using Selenium
+    Open Browser    ${BASE_URL}    ${BROWSER}    service_log_path=logs/chromedriver.log
+
+Open Browserstack Session
+    [Documentation]    Opens a remote BrowserStack session
+    ${username}=    Get Env Or Default    BROWSERSTACK_USERNAME    ${BROWSERSTACK_USERNAME}
+    ${access_key}=    Get Env Or Default    BROWSERSTACK_ACCESS_KEY    ${BROWSERSTACK_ACCESS_KEY}
+    ${remote_url}=    Set Variable    https://${username}:${access_key}@hub-cloud.browserstack.com/wd/hub
+    ${bstack_options}=    Create Dictionary    os=${BROWSERSTACK_OS}    osVersion=${BROWSERSTACK_OS_VERSION}    projectName=${BROWSERSTACK_PROJECT}
+    ...    buildName=${BROWSERSTACK_BUILD}    sessionName=${BROWSERSTACK_SESSION}
+    ${desired_caps}=    Create Dictionary    browserName=${BROWSERSTACK_BROWSER}    browserVersion=${BROWSERSTACK_BROWSER_VERSION}    bstack:options=${bstack_options}
+    Open Browser    ${BASE_URL}    ${BROWSERSTACK_BROWSER}    remote_url=${remote_url}    desired_capabilities=${desired_caps}
+
+Should Use Browserstack
+    [Documentation]    Determines whether BrowserStack should be used for the run
+    ${flag}=    Evaluate    str('${USE_BROWSERSTACK}').strip().lower() in ('true','1','yes')
+    ${username}=    Get Env Or Default    BROWSERSTACK_USERNAME    ${BROWSERSTACK_USERNAME}
+    ${access_key}=    Get Env Or Default    BROWSERSTACK_ACCESS_KEY    ${BROWSERSTACK_ACCESS_KEY}
+    ${has_creds}=    Evaluate    bool('${username}'.strip()) and bool('${access_key}'.strip())
+    ${use_browserstack}=    Evaluate    ${flag} and ${has_creds}
+    [Return]    ${use_browserstack}
+
+Get Env Or Default
+    [Arguments]    ${name}    ${default}
+    ${value}=    OperatingSystem.Get Environment Variable    ${name}    ${default}
+    [Return]    ${value}
 
 Close All Browsers
     [Documentation]    Closes all browser instances
