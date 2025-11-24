@@ -27,8 +27,13 @@ Open Browserstack Session
     ${username}=    Get Env Or Default    BROWSERSTACK_USERNAME    ${BROWSERSTACK_USERNAME}
     ${access_key}=    Get Env Or Default    BROWSERSTACK_ACCESS_KEY    ${BROWSERSTACK_ACCESS_KEY}
     ${remote_url}=    Set Variable    https://${username}:${access_key}@hub-cloud.browserstack.com/wd/hub
+    
+    # НОВЫЙ КОД: Получение имени сборки из Jenkins. Используем BUILD_TAG или BROWSERSTACK_BUILD по умолчанию.
+    ${jenkins_build_name}= Get Env Or Default   BUILD_TAG   ${BROWSERSTACK_BUILD}
+
     ${bstack_options}=    Create Dictionary    os=${BROWSERSTACK_OS}    osVersion=${BROWSERSTACK_OS_VERSION}    projectName=${BROWSERSTACK_PROJECT}
-    ...    buildName=${BROWSERSTACK_BUILD}    sessionName=${BROWSERSTACK_SESSION}
+    # ИСПОЛЬЗУЕМ ПЕРЕМЕННУЮ JENKINS ДЛЯ ИМЕНИ СБОРКИ
+    ...    buildName=${jenkins_build_name}    sessionName=${BROWSERSTACK_SESSION}
     ${desired_caps}=    Create Dictionary    browserName=${BROWSERSTACK_BROWSER}    browserVersion=${BROWSERSTACK_BROWSER_VERSION}    bstack:options=${bstack_options}
     Open Browser    ${BASE_URL}    ${BROWSERSTACK_BROWSER}    remote_url=${remote_url}    desired_capabilities=${desired_caps}
 
@@ -47,34 +52,32 @@ Get Env Or Default
     [Return]    ${value}
 
 # ==============================================================================
-# BROWSERSTACK / TEARDOWN KEYWORDS (ОБНОВЛЕННЫЕ)
+# BROWSERSTACK / TEARDOWN KEYWORDS (ОБРАБОТКА СТАТУСА)
 # ==============================================================================
 
 Mark Test Status
-    [Documentation]    Sends the test status (passed/failed) to BrowserStack.
-    [Arguments]    ${status}    ${reason}
-    ${command}=    Catenate
-    ...    browserstack_executor: {"action": "setSessionStatus", "arguments": {"status": "${status}", "reason": "${reason}"}}
-    Execute Javascript    ${command}
+    [Documentation]    Sends the test status (passed/failed) to BrowserStack.
+    [Arguments]    ${status}    ${reason}
+    ${command}=    Catenate
+    ...    browserstack_executor: {"action": "setSessionStatus", "arguments": {"status": "${status}", "reason": "${reason}"}}
+    Execute Javascript    ${command}
 
 Handle Potential Alert
-    [Documentation]    Tries to handle an alert without failing the test if none is present.
-    Run Keyword And Ignore Error    Handle Alert    action=ACCEPT
-    Run Keyword And Ignore Error    Alert Should Not Be Present
+    [Documentation]    Tries to handle an alert without failing the test if none is present.
+    Run Keyword And Ignore Error    Handle Alert    action=ACCEPT
+    Run Keyword And Ignore Error    Alert Should Not Be Present
 
 Close Browser And Report Status
-    [Documentation]    Closes browser and reports test status to BrowserStack (used as Test Teardown).
-    # Используется переменная ${TEST_STATUS}, которая доступна во время Teardown
-    ${use_browserstack}=    Should Use Browserstack
-    
-    # Отправка статуса в BrowserStack
-    Run Keyword If     ${use_browserstack} and '${TEST_STATUS}' == 'PASS'    Mark Test Status   passed   Test completed successfully.
-    Run Keyword If     ${use_browserstack} and '${TEST_STATUS}' == 'FAIL'    Mark Test Status   failed   Test failed: ${TEST_MESSAGE}
+    [Documentation]    Closes browser and reports test status to BrowserStack (used as Test Teardown).
+    # Используется переменная ${TEST_STATUS}, которая доступна во время Teardown
+    ${use_browserstack}=    Should Use Browserstack
+    
+    # Отправка статуса в BrowserStack
+    Run Keyword If     ${use_browserstack} and '${TEST_STATUS}' == 'PASS'    Mark Test Status   passed   Test completed successfully.
+    Run Keyword If     ${use_browserstack} and '${TEST_STATUS}' == 'FAIL'    Mark Test Status   failed   Test failed: ${TEST_MESSAGE}
 
-    # Завершение работы с браузером
-    SeleniumLibrary.Close All Browsers
-
-# УДАЛЕНО: Старое ключевое слово "Close All Browsers" (теперь оно внутри Close Browser And Report Status)
+    # Завершение работы с браузером
+    SeleniumLibrary.Close All Browsers
 
 # ==============================================================================
 # NAVIGATION & FORM KEYWORDS
