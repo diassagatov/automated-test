@@ -1,8 +1,8 @@
 *** Settings ***
-Library    SeleniumLibrary
-Library    OperatingSystem
-Library    Collections
-Resource   variables.robot
+Library     SeleniumLibrary
+Library     OperatingSystem
+Library     Collections
+Resource    variables.robot
 
 *** Keywords ***
 # ==============================================================================
@@ -28,8 +28,8 @@ Open Browserstack Session
     ${access_key}=    Get Env Or Default    BROWSERSTACK_ACCESS_KEY    ${BROWSERSTACK_ACCESS_KEY}
     ${remote_url}=    Set Variable    https://${username}:${access_key}@hub-cloud.browserstack.com/wd/hub
     
-    # Получение имени сборки из Jenkins (использует BUILD_TAG, если доступен)
-    ${jenkins_build_name}= Get Env Or Default   BUILD_TAG   ${BROWSERSTACK_BUILD}
+    # ИСПРАВЛЕННЫЙ СИНТАКСИС: ПЕРЕМЕННАЯ, ДВА ПРОБЕЛА, КЛЮЧЕВОЕ СЛОВО
+    ${jenkins_build_name}=     Get Env Or Default     BUILD_TAG     ${BROWSERSTACK_BUILD}
 
     ${bstack_options}=    Create Dictionary    os=${BROWSERSTACK_OS}    osVersion=${BROWSERSTACK_OS_VERSION}    projectName=${BROWSERSTACK_PROJECT}
     # Передача имени сборки в BrowserStack
@@ -44,12 +44,12 @@ Should Use Browserstack
     ${access_key}=    Get Env Or Default    BROWSERSTACK_ACCESS_KEY    ${BROWSERSTACK_ACCESS_KEY}
     ${has_creds}=    Evaluate    bool('${username}'.strip()) and bool('${access_key}'.strip())
     ${use_browserstack}=    Evaluate    ${flag} and ${has_creds}
-    [Return]    ${use_browserstack}
+    RETURN   ${use_browserstack}
 
 Get Env Or Default
     [Arguments]    ${name}    ${default}
     ${value}=    OperatingSystem.Get Environment Variable    ${name}    ${default}
-    [Return]    ${value}
+    RETURN   ${value}
 
 # ==============================================================================
 # BROWSERSTACK / TEARDOWN KEYWORDS (ОБРАБОТКА СТАТУСА)
