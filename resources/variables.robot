@@ -5,7 +5,7 @@ ${IMPLICIT_WAIT}         10
 ${PAGE_LOAD_TIMEOUT}     30
 
 # Remote Execution (BrowserStack)
-${USE_BROWSERSTACK}              False
+${USE_BROWSERSTACK}              True
 ${BROWSERSTACK_USERNAME}         diassagatov_LcB1nj
 ${BROWSERSTACK_ACCESS_KEY}       nuPZvU9EM9xuax4YpHyb
 ${BROWSERSTACK_OS}               Windows
