@@ -6,10 +6,6 @@ This project contains automated test cases for the Demo Blaze website using Robo
 
 ```
 testing-ass2/
-├── chromedriver/                 # ChromeDriver executable
-│   ├── chromedriver.exe
-│   ├── LICENSE.chromedriver
-│   └── THIRD_PARTY_NOTICES.chromedriver
 ├── tests/                       # Test case files
 │   ├── test_signup.robot       # User sign up test
 │   ├── test_login.robot        # User login test
@@ -30,13 +26,13 @@ testing-ass2/
 ## Prerequisites
 
 - Python 3.7 or higher
-- Chrome browser installed
-- ChromeDriver (included in chromedriver/ folder)
+- Chrome browser installed (Selenium Manager will pull the matching driver automatically)
 
 ## Setup Instructions
 
-1. **Activate Virtual Environment**
+1. **Create & Activate Virtual Environment**
    ```bash
+   python -m venv venv
    venv\Scripts\activate
    ```
 
@@ -44,6 +40,8 @@ testing-ass2/
    ```bash
    pip install -r requirements.txt
    ```
+
+   > Эквивалентно можно выполнить `pip install robotframework robotframework-seleniumlibrary selenium`, если не используется `requirements.txt`.
 
 ## Running Tests
 
@@ -119,9 +117,9 @@ Key configuration settings in `resources/variables.robot`:
 
 ## Troubleshooting
 
-1. **ChromeDriver Issues**: Ensure ChromeDriver is compatible with your Chrome version
-2. **Element Not Found**: Check if the website structure has changed
-3. **Timeout Issues**: Increase wait times in variables.robot
+1. **Browser/Driver Issues**: Ensure Chrome is installed and up to date so Selenium Manager can fetch a compatible driver.
+2. **Element Not Found**: Check if the website structure has changed.
+3. **Timeout Issues**: Increase wait times in `resources/variables.robot`.
 
 ## Contributing
 
